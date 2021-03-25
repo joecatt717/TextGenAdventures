@@ -1,0 +1,25 @@
+The general project idea is as follows:
+
+Part 1:
+Create a Parsing system that can accurately determine user input as a noun, verb, adjective etc.
+Make this system as streamlined as possible to ensure that the user is not pulled out of the experience with clarification questions.
+
+Part 2:
+Create a complex text adventure game that runs using the Parsing system.
+This is in large part to test the parsing system's functionality.
+
+Part 3:
+Create a simple web and/or mobile app to contain the text adventure, and allow people to play the game free of charge.
+Be sure to implement any feedback acrued this way.
+
+Part 4:
+Expand the scope of the application by creating a second and possibly third text adventure.
+Expand the Parsing system to include items from all three adventures.
+
+Part 5:
+Create an input system that generates text adventures, based on simple user inputs.
+i.e. describe the room - map it...
+what is in the room - create those items in the game_space
+
+Part 6:
+Test it, and alter the program based on player feedback.
