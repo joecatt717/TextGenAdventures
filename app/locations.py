@@ -1,3 +1,5 @@
+from game import Game
+
 class Location:
     """Locations are the places in the game that a player can visit.
     Internally they are represented nodes in a graph.  Each location stores
@@ -74,7 +76,7 @@ class Location:
         if not direction in self.blocks:
             return False
         (block_description, preconditions) = self.blocks[direction]
-        if check_preconditions(preconditions, game):
+        if Location.check_preconditions(preconditions, game):
             # All the preconditions have been met.  You may pass.
             return False
         else: 
@@ -106,18 +108,24 @@ class Location:
                 if not game.is_in_inventory(item):
                     all_conditions_met = False
                     if print_failure_reasons:
-                        print("You don't have the %s" % item.name)
+                        Game.print_slow("You don't have the %s" % item.name)
             if check == "in_location":
                 location = preconditions[check]
                 if not game.curr_location == location:
                     all_conditions_met = False
                     if print_failure_reasons:
-                        print("You aren't in the correct location")
+                        Game.print_slow("You aren't in the correct location")
             if check == "location_has_item":
                 item = preconditions[check]
                 if not item.name in game.curr_location.items:
                     all_conditions_met = False
                     if print_failure_reasons:
-                        print("The %s isn't in this location" % item.name)
+                        Game.print_slow("The %s isn't in this location" % item.name)
+            if check == "block_gone":
+                item = preconditions[check]
+                if item.name in game.curr_location.items:
+                    all_conditions_met = False
+                    if print_failure_reasons:
+                        Game.print_slow("The %s is still blocking the way" % item.name)
         # todo - add other types of preconditions
         return all_conditions_met

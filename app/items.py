@@ -49,5 +49,5 @@ class Item:
         if Location.check_preconditions(preconditions, game):
             end_game = function(game, arguments)
         else:
-            print("Cannot perform the action %s" % command_text)
+            Game.print_slow("Cannot perform the action %s" % command_text)
         return end_game

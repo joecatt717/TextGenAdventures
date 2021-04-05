@@ -1,3 +1,5 @@
+import sys,time
+
 class Game:
     """The Game class represents the world.  Internally, we use a 
     graph of Location objects and Item objects, which can be at a
@@ -97,7 +99,7 @@ class Game:
             game.curr_location.remove_item(item)
             print(action_description)
         else:
-            print(already_done_description)
+            Game.print_slow(already_done_description)
         return False
 
     def end_game(game, *args):
@@ -105,3 +107,29 @@ class Game:
         end_message = args[0]
         print(end_message)
         return True
+
+    def perform_multiple_actions(game, *args):
+        for i in args:
+            for j in (i):
+                j[0](game, j[1])
+
+    def destroy_item(game, *args):
+        '''Removes an Item from the game setting its location is set to None.'''
+        (item, action_description, already_done_description) = args[0]
+        if game.is_in_inventory(item):
+            game.inventory.pop(item.name)
+            print(action_description)
+        elif item.name in game.curr_location.items:
+            game.curr_location.remove_item(item)
+            print(action_description)
+        else:
+            print(already_done_description)
+        return False
+
+'''
+    def print_slow(*args):
+        for letter in args[0]:
+            sys.stdout.write(letter)
+            sys.stdout.flush()
+            time.sleep(0.1)
+'''
