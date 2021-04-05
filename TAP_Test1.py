@@ -56,3 +56,4 @@ ip = TAP.InputParser(game_dictionary)
 
 # Parse Sentence.
 ip.parse_input(sentence)
+
