@@ -39,6 +39,8 @@ def get_hypernyms(word_sense, depth = 5):
 
 def get_hyponyms(word_sense, depth = 5):
     return list(word_sense.closure(hypo, depth = depth))
+
+
 '''
 def annotate_synsets(sentences):
     This function queries WordNet for each word in a list of sentences,
