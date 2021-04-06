@@ -126,6 +126,13 @@ class Game:
             print(already_done_description)
         return False
 
+    def create_item(game, *args):
+        '''Adds an Item into the game space at the current locaton.'''
+        (item, action_description, already_done_description) = args[0]
+        game.curr_location.add_item(item.name, item)
+        print(action_description)
+
+
 '''
     def print_slow(*args):
         for letter in args[0]:

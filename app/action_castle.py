@@ -18,6 +18,10 @@ def build_game():
     tree = Location("A Tall Tree", "You are at the top of a tall tree. From your perch you can see the tower of Action Castle.")
     drawbridge = Location("Drawbridge", "You come to the drawbridge of Action Castle.")
     courtyard = Location("Courtyard", "You are in the courtyard of Action Castle. A castle guard stands watch to the east. Stairs lead up into the tower and down into darkness.")
+    great_feasting_hall = Location("Gread Feasting Hall", "You stand inside the great feasting hall.")
+    tower_stairs = Location("Tower Stairs", "You climb the tower stairs until you come to a door.")
+    dungeon_stairs = Location("Dungeon Stairs", "You are on the dungeon stairs. It's very dark here.")
+    tower = Location("Tower", "You are in the tower.")
 
     # Connections
     cottage.add_connection("out", garden_path)
@@ -27,6 +31,10 @@ def build_game():
     winding_path.add_connection("up", tree)
     winding_path.add_connection("east", drawbridge)
     drawbridge.add_connection("east", courtyard)
+    courtyard.add_connection("up", tower_stairs)
+    courtyard.add_connection("down", dungeon_stairs)
+    courtyard.add_connection("east", great_feasting_hall)
+    tower_stairs.add_connection("in", tower)
 
     # Items that you can pick up
     fishing_pole = Item("pole", "a fishing pole", "A SIMPLE FISHING POLE.", start_at=cottage)
@@ -35,10 +43,14 @@ def build_game():
     rose = Item("rose", "a red rose", "IT SMELLS GOOD.",  start_at=None)
     fish = Item("fish", "a dead fish", "IT SMELLS TERRIBLE.", start_at=None)
     branch = Item("branch", "a dead branch", "IT COULD MAKE A GOOD CLUB.", start_at=tree)
+    key = Item("key", "a shining key", "YOUR NOT SURE WHERE IT LEADS TO.", start_at=None)
 
     # Scenery (not things that you can pick up)
     pond = Item("pond", "a small fishing pond", "THERE ARE FISH IN THE POND.", start_at=fishing_pond, gettable=False)
     troll = Item("troll", "a mean troll", "HE LOOKS ANGRY!", start_at=drawbridge)
+    guard = Item("guard", "one of the king's guard", "THE GUARD WEARS CHAINMAIL ARMOR BUT NO HELMET. A KEY HANGS FROM HIS BELT.", start_at=courtyard)
+    unconscious_guard = Item("unconcious guard", "an unconscious guard", "THE GUARD LIES MOTIONLESS ON THE GROUND. HIS KEY DANGLES LOOSELY FROM HIS BELT.", start_at=None)
+    locked_tower_door = Item("door", "a door", "THE DOOR LOOKS LIKE IT NEEDS A KEY.", start_at=tower_stairs)
 
     # Add special functions to your items
     rosebush.add_action("pick rose",  Game.add_item_to_inventory, (rose, "You pick the lone rose from the rosebush.", "You already picked the rose."))
@@ -47,12 +59,20 @@ def build_game():
     pond.add_action("catch fish with pole",  Game.add_item_to_inventory, (fish, "You dip your hook into the pond and catch a fish.","You weren't able to catch another fish."), preconditions={"inventory_contains":fishing_pole})
     fish.add_action("eat fish",  Game.end_game, ("That's disgusting! It's raw! And definitely not sashimi-grade! But you've won this version of the game. THE END."))
     troll.add_action("give troll a fish", Game.perform_multiple_actions,
-    ([(Game.destroy_item, (fish, "You give the troll a tasty fish.", "")),
-    (Game.destroy_item, (troll, "The troll runs off to eat his prize.", "")),]), preconditions={"inventory_contains":fish, "location_has_item":troll})
+        ([(Game.destroy_item, (fish, "You give the troll a tasty fish.", "")),
+        (Game.destroy_item, (troll, "The troll runs off to eat his prize.", "")),]), preconditions={"inventory_contains":fish, "location_has_item":troll})
     troll.add_action("hit troll with branch", Game.end_game, ("Not a good idea! The troll rips you limb from limb! THE END."))
-
+    guard.add_action("steal key from guard", Game.end_game, ("That was unwise... The guard locks you in the dungeon and you starve to death! THE END."))
+    guard.add_action("hit guard with branch", Game.perform_multiple_actions,
+        ([(Game.destroy_item, (branch, "You hit the guard with the branch, and the branch shatters into tiny pieces.", "")),
+        (Game.destroy_item, (guard, "The guard slumps to the ground, unconscious.", "")),
+        (Game.create_item, (unconscious_guard, "", "")),
+        (Game.create_item, (key, "The guard's key falls to the ground", "")),]), preconditions={"inventory_contains":branch, "location_has_item":guard})
+    locked_tower_door.add_action("unlock door", Game.destroy_item, (locked_tower_door, "You use the key to unlock the door.", ""),preconditions={"inventory_contains":key})
+        
     # Blocks
     drawbridge.add_block("east", "There is a troll blocking the bridge. The troll has a warty green hide and looks hungry.", preconditions= {"block_gone":troll})
+    tower_stairs.add_block("in", "The door is locked. Maybe it needs a key.", preconditions= {"block_gone":locked_tower_door})
 
     return Game(cottage)
 

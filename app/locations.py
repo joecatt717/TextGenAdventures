@@ -108,24 +108,24 @@ class Location:
                 if not game.is_in_inventory(item):
                     all_conditions_met = False
                     if print_failure_reasons:
-                        Game.print_slow("You don't have the %s" % item.name)
+                        print("You don't have the %s" % item.name)
             if check == "in_location":
                 location = preconditions[check]
                 if not game.curr_location == location:
                     all_conditions_met = False
                     if print_failure_reasons:
-                        Game.print_slow("You aren't in the correct location")
+                        print("You aren't in the correct location")
             if check == "location_has_item":
                 item = preconditions[check]
                 if not item.name in game.curr_location.items:
                     all_conditions_met = False
                     if print_failure_reasons:
-                        Game.print_slow("The %s isn't in this location" % item.name)
+                        print("The %s isn't in this location" % item.name)
             if check == "block_gone":
                 item = preconditions[check]
                 if item.name in game.curr_location.items:
                     all_conditions_met = False
                     if print_failure_reasons:
-                        Game.print_slow("The %s is still blocking the way" % item.name)
+                        print("The %s is still blocking the way" % item.name)
         # todo - add other types of preconditions
         return all_conditions_met

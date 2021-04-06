@@ -70,7 +70,7 @@ class Parser:
         elif intent == "sequence":
             end_game = self.execute_sequence(command)
         else:
-            Game.print_slow("I'm not sure what you want to do.")
+            print("I'm not sure what you want to do.")
         return end_game
 
     ### Intent Functions ###
@@ -83,7 +83,7 @@ class Parser:
             if direction in self.game.curr_location.connections:
                 if self.game.curr_location.is_blocked(direction, self.game):
                     # check to see whether that direction is blocked.
-                    Game.print_slow(self.game.curr_location.get_block_description(direction))
+                    print(self.game.curr_location.get_block_description(direction))
                 else:
                     # if it's not blocked, then move there 
                     self.game.curr_location = self.game.curr_location.connections[direction]
@@ -95,20 +95,20 @@ class Parser:
                     else:
                         self.game.describe()
             else:
-                Game.print_slow("You can't go %s from here." % direction.capitalize())
+                print("You can't go %s from here." % direction.capitalize())
         return self.game.curr_location.end_game
 
     def check_inventory(self,command):
         """ The player wants to check their inventory"""
         if len(self.game.inventory) == 0:
-            Game.print_slow("You don't have anything.")
+            print("You don't have anything.")
         else:
             descriptions = []
             for item_name in self.game.inventory:
                 item = self.game.inventory[item_name]
                 descriptions.append(item.description)
-            Game.print_slow("You have: ", end = '')
-            Game.print_slow(*descriptions, sep = ", ",)
+            print("You have: ", end = '')
+            print(*descriptions, sep = ", ",)
   
 
     def examine(self, command):
@@ -120,7 +120,7 @@ class Parser:
             if item_name in command:
                 item = self.game.curr_location.items[item_name]
                 if item.examine_text:
-                    Game.print_slow(item.examine_text)
+                    print(item.examine_text)
                     matched_item = True
                 break
         # check whether any of the items in the inventory match the command
@@ -132,7 +132,7 @@ class Parser:
                     matched_item = True
         # fail
         if not matched_item:
-            Game.print_slow("You don't see anything special.")
+            print("You don't see anything special.")
 
 
     def take(self, command):
@@ -150,21 +150,21 @@ class Parser:
                 if item.gettable:
                     self.game.add_to_inventory(item)
                     self.game.curr_location.remove_item(item)
-                    Game.print_slow(item.take_text)
+                    print(item.take_text)
                     end_game = item.end_game
                 else:
-                    Game.print_slow("You cannot take the %s." % item_name)
+                    print("You cannot take the %s." % item_name)
                 matched_item = True
                 break
         # check whether any of the items in the inventory match the command
         if not matched_item:
             for item_name in self.game.inventory:
                 if item_name in command:
-                    Game.print_slow("You already have the %s." % item_name)
+                    print("You already have the %s." % item_name)
                     matched_item = True
         # fail
         if not matched_item:
-            Game.print_slow("You can't find it.")
+            print("You can't find it.")
 
         return end_game
 
@@ -184,7 +184,7 @@ class Parser:
                     break
         # fail
         if not matched_item:
-            Game.print_slow("You don't have that.")
+            print("You don't have that.")
 
 
     def run_special_command(self, command):
