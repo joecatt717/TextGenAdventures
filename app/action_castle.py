@@ -58,6 +58,9 @@ def build_game():
     locked_tower_door = Item("door", "a door", "THE DOOR LOOKS LIKE IT NEEDS A KEY.", start_at=tower_stairs, gettable=False)
     darkness = Item("nothing, IT'S PITCH BLACK DOWN HERE!", "", "", start_at=dungeon_stairs, gettable=False)
     ghost = Item("ghost", "a spooky ghost", "THE GHOST HAS BONY, CLAW-LIKE FINGERS AND WEARS A GOLD CROWN.", start_at=dungeon, gettable=False)
+    princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY.", start_at=tower, gettable=False)
+    nice_princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY. SHE HOLDS YOUR ROSE CLOSE.", start_at=None, gettable=False)
+    elligable_princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY. SHE HOLDS YOUR ROSE CLOSE.", start_at=None, gettable=False)
 
     # Add special functions to your items
     rosebush.add_action("pick rose",  Game.add_item_to_inventory, (rose, "You pick the lone rose from the rosebush.", "You already picked the rose."))
@@ -84,15 +87,28 @@ def build_game():
         (Game.destroy_item, (ghost, "The ghost flees the dungeon, and leaves behind a gold crown.", "")),
         (Game.create_item, (crown, "", "")),]), preconditions={"inventory_contains":candle})
     candle.add_action("light candle", Game.describe_something, ("The candle casts a flickering flame and emits acrid smoke."), preconditions={"inventory_contains":candle})
-    '''
-    candle.add_action("light candle", Game.perform_multiple_actions,
-        ([(Game.describe_something, ("The candle casts a flickering flame and emits acrid smoke.")),
-        if Game.current_location == dungeon:
-            (Game.destroy_item, (ghost, "The ghost flees the dungeon, and leaves behind a gold crown.", "")),
-            (Game.create_item, (crown, "", "")),]), preconditions={"inventory_contains":candle})
-        else:
-            (Game.describe_something, ("A draft blows the candle out...")),]), preconditions={"inventory_contains":candle}
-    '''
+    princess.add_action("give rose to princess", Game.perform_multiple_actions,
+        ([(Game.destroy_item, (princess, "The princess' cold demeanor softens, and her heart warms to you as she smells the rose.", "")),
+        (Game.destroy_item, (rose, "", "")),
+        (Game.create_item, (nice_princess, "", "")),]), preconditions={"inventory_contains":rose})    
+    princess.add_action("marry princess", Game.describe_something, ("You're not royalty!"))
+    princess.add_action("speak to princess", Game.describe_something, ("She will not speak to you."))
+    nice_princess.add_action("marry princess", Game.describe_something, ("You're not royalty!"))
+    nice_princess.add_action("ask princess about ghost", Game.describe_something, ("'The guards whisper that the ghost of the king haunts the dungeons as a restless spirit!'"))
+    nice_princess.add_action("ask about crown", Game.describe_something, ("'My father's crown was lost after he died.'"))
+    nice_princess.add_action("ask about tower", Game.describe_something, ("'I cannot leave the tower until I'm wed!'"))
+    nice_princess.add_action("ask about throne", Game.describe_something, ("'Only the rightful ruler of Action Castle may claim the throne!'"))
+    nice_princess.add_action("Give crown to princess", Game.perform_multiple_actions,
+        ([(Game.describe_something, ("'My father's crown! You have put his soul to rest and may now take his place as ruler of this land!' She places the crown on your head.")),
+        (Game.destroy_item, (nice_princess, "", "")),
+        (Game.create_item, (elligable_princess, "", "")),]), preconditions={"inventory_contains":crown})
+    elligable_princess.add_action("marry princess", Game.describe_something, ("'Yes, yes! A thousand times yes.' YOU MARRY THE PRINCESS!"))
+    elligable_princess.add_action("ask princess about ghost", Game.describe_something, ("'The guards whisper that the ghost of the king haunts the dungeons as a restless spirit!'"))
+    elligable_princess.add_action("ask about crown", Game.describe_something, ("'My father's crown was lost after he died.'"))
+    elligable_princess.add_action("ask about tower", Game.describe_something, ("'I cannot leave the tower until I'm wed!'"))
+    elligable_princess.add_action("ask about throne", Game.describe_something, ("'Only the rightful ruler of Action Castle may claim the throne!'"))
+
+
     # Blocks
     drawbridge.add_block("east", "There is a troll blocking the bridge. The troll has a warty green hide and looks hungry.", preconditions= {"block_gone":troll})
     tower_stairs.add_block("in", "The door is locked. Maybe it needs a key.", preconditions= {"block_gone":locked_tower_door})
