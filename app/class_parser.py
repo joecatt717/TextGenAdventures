@@ -128,7 +128,7 @@ class Parser:
             if item_name in command:
                 item = self.game.inventory[item_name]
                 if item.examine_text:
-                    Game.print_slow(item.examine_text)
+                    print(item.examine_text)
                     matched_item = True
         # fail
         if not matched_item:

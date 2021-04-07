@@ -23,6 +23,7 @@ def build_game():
     dungeon_stairs = Location("Dungeon Stairs", "You are on the dungeon stairs. It's very dark here.")
     tower = Location("Tower", "You are in the tower.")
     dungeon = Location("Dungeon", "You are in the dungeon.")
+    throne_room = Location("Throne Room", "This is the throne room of Action Castle. There is an ornate gold throne here.")
 
     # Connections
     cottage.add_connection("out", garden_path)
@@ -37,6 +38,7 @@ def build_game():
     courtyard.add_connection("east", great_feasting_hall)
     tower_stairs.add_connection("in", tower)
     dungeon_stairs.add_connection("down", dungeon)
+    great_feasting_hall.add_connection("east", throne_room)
 
     # Items that you can pick up
     lantern = Item("lantern", "an oil lantern", "IT PROVIDES ADEQUATE LIGHT WHEN NEEDED. MADE IN CHINA.", start_at=cottage)
@@ -52,7 +54,7 @@ def build_game():
 
     # Scenery (not things that you can pick up)
     pond = Item("pond", "a small fishing pond", "THERE ARE FISH IN THE POND.", start_at=fishing_pond, gettable=False)
-    troll = Item("troll", "a mean troll", "HE LOOKS ANGRY!", start_at=drawbridge, gettable=False)
+    troll = Item("troll", "a mean troll", "THE TROLL HAS A WARTY GREEN HIDE AND LOOKS HUNGRY!", start_at=drawbridge, gettable=False)
     guard = Item("guard", "one of the king's guard", "THE GUARD WEARS CHAINMAIL ARMOR BUT NO HELMET. A KEY HANGS FROM HIS BELT.", start_at=courtyard, gettable=False)
     unconscious_guard = Item("unconcious guard", "an unconscious guard", "THE GUARD LIES MOTIONLESS ON THE GROUND. HIS KEY DANGLES LOOSELY FROM HIS BELT.", start_at=None, gettable=False)
     locked_tower_door = Item("door", "a door", "THE DOOR LOOKS LIKE IT NEEDS A KEY.", start_at=tower_stairs, gettable=False)
@@ -61,6 +63,7 @@ def build_game():
     princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY.", start_at=tower, gettable=False)
     nice_princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY. SHE HOLDS YOUR ROSE CLOSE.", start_at=None, gettable=False)
     elligable_princess = Item("princess", "the princess", "THE PRINCESS IS BEAUTIFUL, SAD and LONELY. SHE HOLDS YOUR ROSE CLOSE.", start_at=None, gettable=False)
+    throne = Item("throne", "the throne", "AN ORNATE GOLD THRONE", start_at=throne_room, gettable=False)
 
     # Add special functions to your items
     rosebush.add_action("pick rose",  Game.add_item_to_inventory, (rose, "You pick the lone rose from the rosebush.", "You already picked the rose."))
@@ -87,6 +90,7 @@ def build_game():
         (Game.destroy_item, (ghost, "The ghost flees the dungeon, and leaves behind a gold crown.", "")),
         (Game.create_item, (crown, "", "")),]), preconditions={"inventory_contains":candle})
     candle.add_action("light candle", Game.describe_something, ("The candle casts a flickering flame and emits acrid smoke."), preconditions={"inventory_contains":candle})
+    candle.add_action("read runes", Game.describe_something, ("The odd runes are part of an exorcism ritual used to dispel evil spirits."))
     princess.add_action("give rose to princess", Game.perform_multiple_actions,
         ([(Game.destroy_item, (princess, "The princess' cold demeanor softens, and her heart warms to you as she smells the rose.", "")),
         (Game.destroy_item, (rose, "", "")),
@@ -107,7 +111,7 @@ def build_game():
     elligable_princess.add_action("ask about crown", Game.describe_something, ("'My father's crown was lost after he died.'"))
     elligable_princess.add_action("ask about tower", Game.describe_something, ("'I cannot leave the tower until I'm wed!'"))
     elligable_princess.add_action("ask about throne", Game.describe_something, ("'Only the rightful ruler of Action Castle may claim the throne!'"))
-
+    throne.add_action("sit on throne", Game.end_game, ("You are now the new ruler of Action Castle! THE END."), preconditions={"in_inventory":crown})
 
     # Blocks
     drawbridge.add_block("east", "There is a troll blocking the bridge. The troll has a warty green hide and looks hungry.", preconditions= {"block_gone":troll})
