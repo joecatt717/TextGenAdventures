@@ -18,6 +18,7 @@ class Game:
         # Print the special commands associated with items in the game (helpful 
         # for debugging and for novice players).
         self.print_commands = True
+        
 
     def describe(self):
         """Describe the current game state by first describing the current 
